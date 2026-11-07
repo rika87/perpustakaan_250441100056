@@ -10,7 +10,8 @@ Route::middleware('auth')->group(function () {
         Route::apiResource('buku', BukuController::class)->only(['index', 'show']);
     });
 
-    Route::middleware('permission:kelola data buku')->group(function () {
+    // Soal 3: tambah, ubah, hapus dijaga Gate kelola-buku
+    Route::middleware('can:kelola-buku')->group(function () {
         Route::apiResource('buku', BukuController::class)->only(['store', 'update', 'destroy']);
     });
 

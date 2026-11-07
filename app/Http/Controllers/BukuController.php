@@ -17,7 +17,12 @@ class BukuController extends Controller
         ]);
     }
 
-    // Soal 2 (b): query dengan binding
+    // Soal 3: halaman tambah buku, hanya untuk yang lolos Gate kelola-buku
+    public function create()
+    {
+        return $this->index();
+    }
+
     public function cari(Request $request)
     {
         $judul = $request->query('judul');
@@ -39,7 +44,6 @@ class BukuController extends Controller
         ]);
     }
 
-    // Soal 2 (c): penghapusan lewat route DELETE
     public function destroy($id)
     {
         $buku = Buku::findOrFail($id);

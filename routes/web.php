@@ -24,15 +24,20 @@ Route::middleware('auth')->group(function () {
 
     Route::get('/buku', [BukuController::class, 'index'])
         ->middleware('permission:lihat daftar buku')->name('components.buku.index');
+
+    // Soal 3: form tambah buku, hanya untuk yang lolos Gate kelola-buku
+    Route::get('/buku/create', [BukuController::class, 'create'])
+        ->middleware('can:kelola-buku')->name('buku.create');
+
     Route::get('/buku/{id}', [BukuController::class, 'show'])
         ->middleware('permission:lihat daftar buku')->whereNumber('id')->name('components.buku.show');
 
     Route::get('/kelola/buku', [BukuController::class, 'index'])
-        ->middleware('permission:kelola data buku')->name('kelola.buku');
+        ->middleware('can:kelola-buku')->name('kelola.buku');
 
-    // Soal 2 (c): penghapusan buku lewat DELETE
+    // Soal 3: hapus buku dijaga Gate kelola-buku
     Route::delete('/buku/{id}', [BukuController::class, 'destroy'])
-        ->middleware('permission:kelola data buku')->whereNumber('id')->name('buku.destroy');
+        ->middleware('can:kelola-buku')->whereNumber('id')->name('buku.destroy');
 
     // Dashboard umum (semua yang sudah login)
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');

@@ -41,7 +41,7 @@
                         <a href="{{ route('siswa.dashboard') }}">Dashboard</a>
                     @endrole
 
-                    @can('kelola data buku')
+                    @can('kelola-buku')
                         <a href="{{ route('kelola.buku') }}">Kelola Buku</a>
                     @endcan
                     @can('kelola data pengguna')

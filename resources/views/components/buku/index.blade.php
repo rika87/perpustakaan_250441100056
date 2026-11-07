@@ -26,7 +26,11 @@
 
         <div id="alert-area"></div>
 
-        @can('kelola data buku')
+        @can('kelola-buku')
+            <a href="{{ route('buku.create') }}" class="bk-btn">Tambah Buku</a>
+        @endcan
+
+        @can('kelola-buku')
         <div class="bk-card">
             <h3 id="judul-form">Tambah Buku</h3>
 
@@ -111,20 +115,21 @@
                     @foreach ($bukuServer as $i => $b)
                         <tr>
                             <td>{{ $i + 1 }}</td>
-                            {{-- RENTAN (Soal 1): <td>{!! $b->judul !!}</td> --}}
                             <td>{{ $b->judul }}</td>
                             <td>{{ $b->penulis }}</td>
                             <td>{{ $b->tahun_terbit }}</td>
                             <td>
                                 <a class="bk-btn bk-btn-detail" href="{{ route('components.buku.show', $b->id) }}">Detail</a>
 
-                                <form action="{{ route('buku.destroy', $b->id) }}" method="POST"
-                                      style="display:inline"
-                                      onsubmit="return confirm('Yakin ingin menghapus buku ini?')">
-                                    @csrf
-                                    @method('DELETE')
-                                    <button type="submit" class="bk-btn bk-btn-hapus">Hapus</button>
-                                </form>
+                                @can('kelola-buku')
+                                    <form action="{{ route('buku.destroy', $b->id) }}" method="POST"
+                                          style="display:inline"
+                                          onsubmit="return confirm('Yakin ingin menghapus buku ini?')">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button type="submit" class="bk-btn bk-btn-hapus">Hapus</button>
+                                    </form>
+                                @endcan
                             </td>
                         </tr>
                     @endforeach
@@ -136,7 +141,7 @@
 </section>
 
 <script>
-    window.BISA_KELOLA = @json(auth()->user()?->can('kelola data buku') ?? false);
+    window.BISA_KELOLA = @json(auth()->user()?->can('kelola-buku') ?? false);
 </script>
 <script src="{{ asset('js/buku-client.js') }}"></script>
 
