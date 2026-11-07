@@ -7,26 +7,20 @@ use App\Http\Controllers\LaporanController;
 use App\Http\Controllers\PeminjamanController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\Api\BukuController as BukuApiController;
-
 
 Route::get('/', function () {
     return view('home');
 })->name('home');
 
+// Autentikasi
+Route::middleware('auth')->group(function () {
 
-    // Autentikasi
-    Route::middleware('auth')->group(function () {
-
+    // Soal 1 (A2) dan Soal 1 (A4); rute hapus GET (A3) sudah dihapus di Soal 2
     Route::get('/buku-cari', [BukuController::class, 'cari'])
-    ->name('buku.cari');
-
-    Route::get('/buku/{buku}/hapus', [BukuApiController::class, 'destroy'])
-    ->name('buku.hapus-get');
+        ->name('buku.cari');
 
     Route::get('/peminjaman/{id}', [PeminjamanController::class, 'show'])
-    
-    ->whereNumber('id')->name('peminjaman.show');
+        ->whereNumber('id')->name('peminjaman.show');
 
     Route::get('/buku', [BukuController::class, 'index'])
         ->middleware('permission:lihat daftar buku')->name('components.buku.index');
@@ -36,6 +30,10 @@ Route::get('/', function () {
     Route::get('/kelola/buku', [BukuController::class, 'index'])
         ->middleware('permission:kelola data buku')->name('kelola.buku');
 
+    // Soal 2 (c): penghapusan buku lewat DELETE
+    Route::delete('/buku/{id}', [BukuController::class, 'destroy'])
+        ->middleware('permission:kelola data buku')->whereNumber('id')->name('buku.destroy');
+
     // Dashboard umum (semua yang sudah login)
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
@@ -43,29 +41,21 @@ Route::get('/', function () {
         ->middleware(['role:admin', 'permission:akses dashboard admin'])->name('admin.dashboard');
 
     Route::get('/petugas/dashboard', [DashboardController::class, 'petugas'])
-       
-    ->middleware(['role:petugas', 'permission:akses dashboard petugas'])->name('petugas.dashboard');
+        ->middleware(['role:petugas', 'permission:akses dashboard petugas'])->name('petugas.dashboard');
     // Untuk membatasi akses hanya untuk petugas.
 
-
     Route::get('/siswa/dashboard', [DashboardController::class, 'siswa'])
-      
-    ->middleware('role:siswa')->name('siswa.dashboard');
+        ->middleware('role:siswa')->name('siswa.dashboard');
 
-
-    
     Route::get('/admin/pengguna', [PenggunaController::class, 'index'])
         ->middleware('permission:kelola data pengguna')->name('admin.pengguna.index');
-
 
     Route::patch('/admin/pengguna/{user}/role', [PenggunaController::class, 'updateRole'])
         ->middleware('permission:kelola role pengguna')->name('admin.pengguna.role');
     Route::delete('/admin/pengguna/{user}', [PenggunaController::class, 'destroy'])
-
-
         ->middleware('permission:kelola data pengguna')->name('admin.pengguna.destroy');
 
-        Route::get('/peminjaman', [PeminjamanController::class, 'index'])
+    Route::get('/peminjaman', [PeminjamanController::class, 'index'])
         ->middleware('permission:kelola peminjaman')->name('peminjaman.index');
     Route::patch('/peminjaman/{id}/proses', [PeminjamanController::class, 'proses'])
         ->middleware('permission:memproses persetujuan peminjaman')->whereNumber('id')->name('peminjaman.proses');
@@ -88,18 +78,11 @@ Route::get('/', function () {
 
     // Laporan (admin dan petugas)
     Route::get('/laporan', [LaporanController::class, 'index'])
-    
-
-
-    // ot
-
-    ->middleware(['role:admin|petugas', 'permission:lihat laporan perpustakaan'])->name('laporan.index');
+        ->middleware(['role:admin|petugas', 'permission:lihat laporan perpustakaan'])->name('laporan.index');
 
     // Profil milik sendiri (controller bawaan Breeze memakai $request->user())
     Route::get('/profile', [ProfileController::class, 'edit'])
-       
         ->middleware('permission:lihat profil sendiri')->name('profile.edit');
-        
     Route::patch('/profile', [ProfileController::class, 'update'])
         ->middleware('permission:ubah profil sendiri')->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])
@@ -109,7 +92,5 @@ Route::get('/', function () {
 // Route login, registrasi, logout (middleware guest) dibuat oleh Breeze
 require __DIR__ . '/auth.php';
 
-
-
-    Route::patch('/peminjaman/{id}/tolak', [PeminjamanController::class, 'tolak'])
-        ->middleware('permission:memproses persetujuan peminjaman')->whereNumber('id')->name('peminjaman.tolak');
+Route::patch('/peminjaman/{id}/tolak', [PeminjamanController::class, 'tolak'])
+    ->middleware('permission:memproses persetujuan peminjaman')->whereNumber('id')->name('peminjaman.tolak');

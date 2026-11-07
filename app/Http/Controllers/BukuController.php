@@ -10,7 +10,6 @@ class BukuController extends Controller
 {
     public function index()
     {
-        // Soal 1 (A1): data buku terbaru dirender langsung oleh Blade
         $bukuServer = Buku::orderByDesc('id')->take(10)->get();
 
         return view('components.buku.index', [
@@ -18,13 +17,14 @@ class BukuController extends Controller
         ]);
     }
 
-    // Soal 1 (A2): RENTAN SQL injection, $judul digabung ke string SQL
+    // Soal 2 (b): query dengan binding
     public function cari(Request $request)
     {
         $judul = $request->query('judul');
 
         $hasil = DB::select(
-            "SELECT id, judul, penulis, tahun_terbit FROM bukus WHERE judul = '$judul'"
+            'SELECT id, judul, penulis, tahun_terbit FROM bukus WHERE judul = ?',
+            [$judul]
         );
 
         return response()->json($hasil);
@@ -37,5 +37,14 @@ class BukuController extends Controller
         return view('components.buku.show', [
             'buku' => $buku
         ]);
+    }
+
+    // Soal 2 (c): penghapusan lewat route DELETE
+    public function destroy($id)
+    {
+        $buku = Buku::findOrFail($id);
+        $buku->delete();
+
+        return back()->with('status', 'Buku berhasil dihapus.');
     }
 }

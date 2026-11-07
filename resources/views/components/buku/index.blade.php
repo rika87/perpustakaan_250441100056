@@ -89,31 +89,47 @@
                 <button type="button" id="btn-next" class="bk-btn bk-btn-batal">Berikutnya &raquo;</button>
                 <span id="info-halaman"></span>
             </div>
-            <div class="bk-card">
-    <h3>Buku Terbaru (dirender Blade)</h3>
+        </div>
 
-    <table class="bk-table">
-        <thead>
-            <tr>
-                <th>No</th>
-                <th>Judul</th>
-                <th>Penulis</th>
-                <th>Tahun</th>
-            </tr>
-        </thead>
+        @if (session('status'))
+            <div class="bk-alert bk-success" role="alert">{{ session('status') }}</div>
+        @endif
 
-        <tbody>
-            @foreach ($bukuServer as $i => $b)
-                <tr>
-                    <td>{{ $i + 1 }}</td>
-                    <td>{!! $b->judul !!}</td>
-                    <td>{{ $b->penulis }}</td>
-                    <td>{{ $b->tahun_terbit }}</td>
-                </tr>
-            @endforeach
-        </tbody>
-    </table>
-</div>
+        <div class="bk-card">
+            <h3>Buku Terbaru (dirender Blade)</h3>
+            <table class="bk-table">
+                <thead>
+                    <tr>
+                        <th style="width:60px">No</th>
+                        <th>Judul</th>
+                        <th>Penulis</th>
+                        <th style="width:120px">Tahun</th>
+                        <th style="width:220px">Aksi</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach ($bukuServer as $i => $b)
+                        <tr>
+                            <td>{{ $i + 1 }}</td>
+                            {{-- RENTAN (Soal 1): <td>{!! $b->judul !!}</td> --}}
+                            <td>{{ $b->judul }}</td>
+                            <td>{{ $b->penulis }}</td>
+                            <td>{{ $b->tahun_terbit }}</td>
+                            <td>
+                                <a class="bk-btn bk-btn-detail" href="{{ route('components.buku.show', $b->id) }}">Detail</a>
+
+                                <form action="{{ route('buku.destroy', $b->id) }}" method="POST"
+                                      style="display:inline"
+                                      onsubmit="return confirm('Yakin ingin menghapus buku ini?')">
+                                    @csrf
+                                    @method('DELETE')
+                                    <button type="submit" class="bk-btn bk-btn-hapus">Hapus</button>
+                                </form>
+                            </td>
+                        </tr>
+                    @endforeach
+                </tbody>
+            </table>
         </div>
 
     </div>
