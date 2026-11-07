@@ -37,8 +37,7 @@ Route::middleware('auth')->group(function () {
 
     // Soal 3: hapus buku dijaga Gate kelola-buku
     Route::delete('/buku/{id}', [BukuController::class, 'destroy'])
-        ->middleware('can:kelola-buku')->whereNumber('id')->name('buku.destroy');
-
+        ->middleware('can:kelola-buku')->whereNumber('id')->name('buku.hapus');
     // Dashboard umum (semua yang sudah login)
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
@@ -99,3 +98,4 @@ require __DIR__ . '/auth.php';
 
 Route::patch('/peminjaman/{id}/tolak', [PeminjamanController::class, 'tolak'])
     ->middleware('permission:memproses persetujuan peminjaman')->whereNumber('id')->name('peminjaman.tolak');
+

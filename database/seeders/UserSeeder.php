@@ -7,14 +7,20 @@ use App\Models\User;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Str;
 
 class UserSeeder extends Seeder
 {
     public function run(): void
     {
-        $admin = User::firstOrCreate(
+        // Soal 5 (c): password admin diambil dari .env, bukan lagi "password"
+        $admin = User::updateOrCreate(
             ['email' => 'admin@gmail.com'],
-            ['username' => 'admin', 'name' => 'Administrator', 'password' => Hash::make('password')]
+            [
+                'username' => 'admin',
+                'name'     => 'Administrator',
+                'password' => Hash::make(env('ADMIN_PASSWORD', Str::random(32))),
+            ]
         );
         $admin->syncRoles('admin');
 

@@ -122,7 +122,7 @@
                                 <a class="bk-btn bk-btn-detail" href="{{ route('components.buku.show', $b->id) }}">Detail</a>
 
                                 @can('kelola-buku')
-                                    <form action="{{ route('buku.destroy', $b->id) }}" method="POST"
+                                    <form action="{{ route('buku.hapus', $b->id) }}" method="POST"
                                           style="display:inline"
                                           onsubmit="return confirm('Yakin ingin menghapus buku ini?')">
                                         @csrf
