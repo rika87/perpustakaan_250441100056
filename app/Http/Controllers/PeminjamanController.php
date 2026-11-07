@@ -8,6 +8,7 @@ use Illuminate\Database\Query\Builder;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Gate;
 use Illuminate\View\View;
 
 class PeminjamanController extends Controller
@@ -151,10 +152,12 @@ class PeminjamanController extends Controller
         ]);
     }
 
-    // Soal 1 (A4): RENTAN IDOR, tidak ada pemeriksaan pemilik
+    // Soal 4: IDOR ditutup dengan Policy
     public function show(string $id): View
     {
         $p = Peminjaman::findOrFail($id);
+
+        Gate::authorize('view', $p);
 
         return view('riwayat.show', ['p' => $p]);
     }
