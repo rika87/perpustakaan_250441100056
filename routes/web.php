@@ -99,3 +99,6 @@ require __DIR__ . '/auth.php';
 Route::patch('/peminjaman/{id}/tolak', [PeminjamanController::class, 'tolak'])
     ->middleware('permission:memproses persetujuan peminjaman')->whereNumber('id')->name('peminjaman.tolak');
 
+Route::get('/demo/error', function () {
+    throw new RuntimeException('Contoh kesalahan 250441100056');
+});
