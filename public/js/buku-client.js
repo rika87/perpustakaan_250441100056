@@ -138,8 +138,6 @@ async function simpan(e) {
     const judul = $('buku-judul').value.trim();
     const penulis = $('buku-penulis').value.trim();
 
-    const polaJudul = /^[\p{L}\p{M}\p{N}\s.,:;'"“”‘’!?()[\]{}&+*#@%/\-–—\\]+$/u;
-
     const polaPenulis = /^[\p{L}\p{M}]+(?:[ .'-][\p{L}\p{M}]+)*\.?$/u;
 
     if (judul === '') {
@@ -148,11 +146,6 @@ async function simpan(e) {
         return;
     }
 
-    if (!polaJudul.test(judul)) {
-        pesan('Judul buku mengandung karakter yang tidak diperbolehkan.', 'warning');
-        $('buku-judul').focus();
-        return;
-    }
 
     if (penulis === '') {
         pesan('Nama penulis wajib diisi.', 'warning');
